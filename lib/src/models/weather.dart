@@ -73,11 +73,14 @@ class WeatherData {
   final List<DailyWeather> daily;
 
   /// Any weather alerts in effect for the location.
-
   final List<Alert> alerts;
 }
 
+/// A class representing the current weather data from the API response.
 class CurrentWeather {
+  /// Constructs a [CurrentWeather] instance.
+  ///
+  /// All parameters are required.
   CurrentWeather({
     required this.dt,
     required this.sunrise,
@@ -86,233 +89,267 @@ class CurrentWeather {
     required this.feelsLike,
     required this.pressure,
     required this.humidity,
-    required this.dewPoint,
-    required this.uvi,
     required this.clouds,
     required this.visibility,
     required this.windSpeed,
-    required this.windDeg,
-    required this.windGust,
     required this.weatherCondition,
   });
 
+  /// Creates a [CurrentWeather] instance from a JSON object.
+  ///
+  /// The [json] parameter must not be null.
   factory CurrentWeather.fromJson(Map<String, dynamic> json) {
     return CurrentWeather(
-      dt: json['dt'],
-      sunrise: json['sunrise'],
-      sunset: json['sunset'],
-      temp: json['temp'],
-      feelsLike: json['feels_like'],
-      pressure: json['pressure'],
-      humidity: json['humidity'],
-      dewPoint: json['dew_point'],
-      uvi: json['uvi'],
-      clouds: json['clouds'],
-      visibility: json['visibility'],
-      windSpeed: json['wind_speed'],
-      windDeg: json['wind_deg'],
-      windGust: json['wind_gust'],
+      dt: int.parse(json['dt'].toString()),
+      sunrise: int.parse(json['sunrise'].toString()),
+      sunset: int.parse(json['sunset'].toString()),
+      temp: double.parse(json['temp'].toString()),
+      feelsLike: double.parse(json['feels_like'].toString()),
+      pressure: int.parse(json['pressure'].toString()),
+      humidity: int.parse(json['humidity'].toString()),
+      clouds: int.parse(json['clouds'].toString()),
+      visibility: int.parse(json['visibility'].toString()),
+      windSpeed: double.parse(json['clouds'].toString()),
       weatherCondition:
           WeatherCondition.fromJson(json['weather'][0] as Map<String, dynamic>),
     );
   }
+
+  /// The time of the measurement, Unix timestamp, UTC.
   final int dt;
+
+  /// The time of the sunrise, Unix timestamp, UTC.
   final int sunrise;
+
+  /// The time of the sunset, Unix timestamp, UTC.
   final int sunset;
+
+  /// The temperature.
   final double temp;
+
+  /// The perceived (feels-like) temperature.
   final double feelsLike;
+
+  /// The atmospheric pressure
   final int pressure;
+
+  /// The humidity, %.
   final int humidity;
-  final double dewPoint;
-  final double uvi;
+
+  /// The cloudiness, %.
   final int clouds;
+
+  /// The average visibility, meters.
   final int visibility;
+
+  /// The wind speed, m/s.
   final double windSpeed;
-  final int windDeg;
-  final double windGust;
+
   final WeatherCondition weatherCondition;
 }
 
+/// A class representing the minutely weather forecast for a specific location.
 class MinutelyWeather {
+  /// Creates a new [MinutelyWeather] instance.
+  ///
+  /// All parameters are required.
   MinutelyWeather({
     required this.dt,
     required this.precipitation,
   });
 
+  /// Creates a new [MinutelyWeather] instance from a JSON object.
+  ///
+  /// The [json] parameter must not be null.
   factory MinutelyWeather.fromJson(Map<String, dynamic> json) {
     return MinutelyWeather(
-      dt: json['dt'],
-      precipitation: json['precipitation'],
+      dt: int.parse(json['dt'].toString()),
+      precipitation: int.parse(
+        json['precipitation'].toString(),
+      ),
     );
   }
+
+  /// The time of the forecasted data, represented as seconds since the Unix
+  /// epoch.
   final int dt;
+
+  /// The amount of precipitation expected in the next hour, in millimeters.
   final int precipitation;
 }
 
+/// A class that represents hourly weather information.
 class HourlyWeather {
+  /// Creates an instance of [HourlyWeather].
   HourlyWeather({
-    this.dt,
-    this.temp,
-    this.feelsLike,
-    this.pressure,
-    this.humidity,
-    this.dewPoint,
-    this.uvi,
-    this.clouds,
-    this.visibility,
-    this.windSpeed,
-    this.windDeg,
-    this.windGust,
-    this.weather,
-    this.pop,
+    required this.dt,
+    required this.temp,
+    required this.feelsLike,
+    required this.pressure,
+    required this.humidity,
+    required this.clouds,
+    required this.visibility,
+    required this.windSpeed,
+    required this.weather,
   });
 
+  /// Creates an instance of [HourlyWeather] from a JSON object.
   factory HourlyWeather.fromJson(Map<String, dynamic> json) => HourlyWeather(
-        dt: json["dt"],
-        temp: json["temp"].toDouble(),
-        feelsLike: json["feels_like"].toDouble(),
-        pressure: json["pressure"],
-        humidity: json["humidity"],
-        dewPoint: json["dew_point"].toDouble(),
-        uvi: json["uvi"].toDouble(),
-        clouds: json["clouds"],
-        visibility: json["visibility"],
-        windSpeed: json["wind_speed"].toDouble(),
-        windDeg: json["wind_deg"],
-        windGust: json["wind_gust"].toDouble(),
-        weather:
-            List<Weather>.from(json["weather"].map((x) => Weather.fromJson(x))),
-        pop: json["pop"].toDouble(),
+        dt: int.parse(json['dt'].toString()),
+        temp: double.parse(json['temp'].toString()),
+        feelsLike: double.parse(json['feels_like'].toString()),
+        pressure: int.parse(json['pressure'].toString()),
+        humidity: int.parse(json['humidity'].toString()),
+        clouds: int.parse(json['clouds'].toString()),
+        visibility: int.parse(json['visibility'].toString()),
+        windSpeed: double.parse(json['clouds'].toString()),
+        weather: List<Weather>.from(
+          ((json['weather']) as List).map(
+            (x) => Weather.fromJson(x as Map<String, dynamic>),
+          ),
+        ),
       );
-  int dt;
-  double temp;
-  double feelsLike;
-  int pressure;
-  int humidity;
-  double dewPoint;
-  double uvi;
-  int clouds;
-  int visibility;
-  double windSpeed;
-  int windDeg;
-  double windGust;
-  List<Weather> weather;
-  double pop;
 
-  Map<String, dynamic> toJson() => {
-        "dt": dt,
-        "temp": temp,
-        "feels_like": feelsLike,
-        "pressure": pressure,
-        "humidity": humidity,
-        "dew_point": dewPoint,
-        "uvi": uvi,
-        "clouds": clouds,
-        "visibility": visibility,
-        "wind_speed": windSpeed,
-        "wind_deg": windDeg,
-        "wind_gust": windGust,
-        "weather": List<dynamic>.from(weather.map((x) => x.toJson())),
-        "pop": pop,
-      };
+  /// The time of the forecasted data in Unix timestamp format.
+  int dt;
+
+  /// The temperature at the time of the forecast.
+  double temp;
+
+  /// The perceived temperature (feels like) at the time of the forecast.
+  double feelsLike;
+
+  /// The atmospheric pressure at the time of the forecast.
+  int pressure;
+
+  /// The relative humidity at the time of the forecast.
+  int humidity;
+
+  /// The percentage of cloudiness at the time of the forecast.
+  int clouds;
+
+  /// The average visibility at the time of the forecast, measured in meters.
+  int visibility;
+
+  /// The wind speed at the time of the forecast, measured in meters per second.
+  double windSpeed;
+
+  /// The weather conditions at the time of the forecast.
+  List<Weather> weather;
 }
 
+/// Represents weather information for a particular location at a given time.
 class Weather {
+  /// Creates a new instance of the [Weather] class.
   Weather({
-    this.id,
-    this.main,
-    this.description,
-    this.icon,
+    required this.id,
+    required this.main,
+    required this.description,
+    required this.icon,
   });
+
+  /// Creates a new instance of the [Weather] class from a JSON object.
 
   factory Weather.fromJson(Map<String, dynamic> json) => Weather(
-        id: json["id"],
-        main: json["main"],
-        description: json["description"],
-        icon: json["icon"],
+        id: int.parse(json['id'].toString()),
+        main: json['main'] as String,
+        description: json['description'] as String,
+        icon: json['icon'] as String,
       );
+
+  /// The weather condition ID.
   int id;
+
+  /// The main weather parameter, such as "Rain".
   String main;
+
+  /// A brief description of the weather.
   String description;
+
+  /// The weather icon ID.
   String icon;
 
+  /// Converts this [Weather] object to a JSON object.
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "main": main,
-        "description": description,
-        "icon": icon,
+        'id': id,
+        'main': main,
+        'description': description,
+        'icon': icon,
       };
 }
 
+/// Represents weather information for a specific day.
 class DailyWeather {
+  /// Creates a new instance of the [DailyWeather] class.
+
   DailyWeather({
     required this.dt,
     required this.sunrise,
     required this.sunset,
-    required this.moonrise,
-    required this.moonset,
-    required this.moonPhase,
     required this.temperature,
     required this.feelsLike,
-    required this.pressure,
     required this.humidity,
-    required this.dewPoint,
     required this.windSpeed,
-    required this.windDeg,
-    required this.windGust,
     required this.weather,
     required this.clouds,
-    required this.pop,
     required this.rain,
-    required this.uvi,
   });
 
+  /// Creates a new instance of [DailyWeather] from a JSON object.
   factory DailyWeather.fromJson(Map<String, dynamic> json) {
     return DailyWeather(
-      dt: json['dt'],
-      sunrise: json['sunrise'],
-      sunset: json['sunset'],
-      moonrise: json['moonrise'],
-      moonset: json['moonset'],
-      moonPhase: json['moon_phase'],
-      temperature: Temperature.fromJson(json['temp']),
-      feelsLike: FeelsLike.fromJson(json['feels_like']),
-      pressure: json['pressure'],
-      humidity: json['humidity'],
-      dewPoint: json['dew_point'],
-      windSpeed: json['wind_speed'],
-      windDeg: json['wind_deg'],
-      windGust: json['wind_gust'],
-      weather:
-          List<Weather>.from(json['weather'].map((x) => Weather.fromJson(x))),
-      clouds: json['clouds'],
-      pop: json['pop'],
-      rain: json['rain'] != null ? json['rain']['1h'] : 0,
-      uvi: json['uvi'],
+      dt: int.parse(json['dt'].toString()),
+      sunrise: int.parse(json['sunrise'].toString()),
+      sunset: int.parse(json['sunset'].toString()),
+      humidity: int.parse(json['humidity'].toString()),
+      clouds: int.parse(json['clouds'].toString()),
+      windSpeed: double.parse(json['clouds'].toString()),
+      temperature: Temperature.fromJson(json['temp'] as Map<String, dynamic>),
+      rain: double.parse(json['rain'].toString()),
+      feelsLike: FeelsLike.fromJson(json['feels_like'] as Map<String, dynamic>),
+      weather: List<Weather>.from(
+        ((json['weather']) as List).map(
+          (x) => Weather.fromJson(x as Map<String, dynamic>),
+        ),
+      ),
     );
   }
-  int dt;
-  int sunrise;
-  int sunset;
-  double moonrise;
-  double moonset;
-  double moonPhase;
-  Temperature temperature;
-  FeelsLike feelsLike;
-  int pressure;
-  int humidity;
-  double dewPoint;
-  double windSpeed;
-  int windDeg;
-  double windGust;
-  List<Weather> weather;
-  int clouds;
-  double pop;
-  double rain;
-  double uvi;
+
+  /// The date and time of the weather data in Unix, UTC format.
+  final int dt;
+
+  /// The time of the sunrise in Unix, UTC format.
+  final int sunrise;
+
+  /// The time of the sunset in Unix, UTC format.
+  final int sunset;
+
+  /// The temperature information for the day.
+  final Temperature temperature;
+
+  /// The "feels like" temperature information for the day.
+  final FeelsLike feelsLike;
+
+  /// The relative humidity percentage.
+  final int humidity;
+
+  /// The wind speed in meters per second.
+  final double windSpeed;
+
+  /// The weather conditions for the day.
+  final List<Weather> weather;
+
+  /// The percentage of cloud cover.
+  final int clouds;
+
+  /// The amount of rain in millimeters that fell in the last hour, if any.
+  final double rain;
 }
 
+/// Represents the temperature information for a particular weather forecast.It
+/// contains the temperature for different times of the day.
 class Temperature {
+  /// Creates an instance of [Temperature].
   Temperature({
     required this.day,
     required this.min,
@@ -322,25 +359,43 @@ class Temperature {
     required this.morn,
   });
 
+  /// Creates an instance of [HourlyWeather] from a JSON object.
   factory Temperature.fromJson(Map<String, dynamic> json) {
     return Temperature(
-      day: json['day'],
-      min: json['min'],
-      max: json['max'],
-      night: json['night'],
-      eve: json['eve'],
-      morn: json['morn'],
+      day: double.parse(json['day'].toString()),
+      min: double.parse(json['min'].toString()),
+      max: double.parse(json['max'].toString()),
+      night: double.parse(json['night'].toString()),
+      eve: double.parse(json['eve'].toString()),
+      morn: double.parse(json['morn'].toString()),
     );
   }
+
+  /// A double value representing the day temperature, in Celsius.
   double day;
+
+  /// A double value representing the minimum temperature, in Celsius,
+  /// during the day.
   double min;
+
+  /// A double value representing the maximum temperature, in Celsius,
+  /// during the day.
   double max;
+
+  /// A double value representing the night temperature, in Celsius.
   double night;
+
+  /// A double value representing the evening temperature, in Celsius.
   double eve;
+
+  /// A double value representing morning temperature, in Celcius.
   double morn;
 }
 
+/// Represents the feels like temperature for a given time period in a weather
+/// forecast.
 class FeelsLike {
+  /// Creates an instance of [FeelsLike].
   FeelsLike({
     required this.day,
     required this.night,
@@ -348,21 +403,36 @@ class FeelsLike {
     required this.morn,
   });
 
+  /// Creates a new instance of [DailyWeather] from a JSON object.
   factory FeelsLike.fromJson(Map<String, dynamic> json) {
     return FeelsLike(
-      day: json['day'],
-      night: json['night'],
-      eve: json['eve'],
-      morn: json['morn'],
+      day: double.parse(json['day'].toString()),
+      night: double.parse(json['night'].toString()),
+      eve: double.parse(json['eve'].toString()),
+      morn: double.parse(json['morn'].toString()),
     );
   }
+
+  /// A double value representing the feels like temperature for
+  /// the day time period.
   double day;
+
+  /// A double value representing the feels like temperature for the night
+  /// time period.
   double night;
+
+  /// A double value representing the feels like temperature for the evening
+  /// time period.
   double eve;
+
+  /// A double value representing the feels like temperature for the morning
+  /// time period.
   double morn;
 }
 
+/// An alert issued by a weather service or other source.
 class Alert {
+  /// Creates an instance of [Alert] with the given properties.
   Alert({
     required this.senderName,
     required this.event,
@@ -372,31 +442,81 @@ class Alert {
     required this.tags,
   });
 
+  /// Creates a new instance of [Alert] from a JSON object.
   factory Alert.fromJson(Map<String, dynamic> json) {
     return Alert(
-      senderName: json['sender_name'],
-      event: json['event'],
-      start: json['start'],
-      end: json['end'],
-      description: json['description'],
-      tags: List<String>.from(json['tags']),
+      senderName: json['sender_name'] as String,
+      event: json['event'] as String,
+      start: int.parse(json['start'].toString()),
+      end: int.parse(json['end'].toString()),
+      description: json['description'] as String,
+      tags: List<String>.from(json['tags'].toString() as Iterable).toList(),
     );
   }
+
+  /// The name of the sender of the alert.
   String senderName;
+
+  /// The event type of the alert.
   String event;
+
+  /// The time at which the alert starts, in UNIX timestamp format.
   int start;
+
+  /// The time at which the alert ends, in UNIX timestamp format.
   int end;
+
+  /// A detailed description of the alert.
   String description;
+
+  /// Tags associated with the alert.
   List<String> tags;
 
+  /// Converts this [Alert] object to a JSON object.
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['sender_name'] = this.senderName;
-    data['event'] = this.event;
-    data['start'] = this.start;
-    data['end'] = this.end;
-    data['description'] = this.description;
-    data['tags'] = this.tags;
+    final data = <String, dynamic>{};
+    data['sender_name'] = senderName;
+    data['event'] = event;
+    data['start'] = start;
+    data['end'] = end;
+    data['description'] = description;
+    data['tags'] = tags;
     return data;
   }
+}
+
+/// A model class representing the weather condition.
+class WeatherCondition {
+  /// Creates an instance of [WeatherCondition].
+
+  WeatherCondition({
+    required this.id,
+    required this.main,
+    required this.description,
+    required this.icon,
+  });
+
+  /// Creates a new instance of [WeatherCondition] from a JSON object.
+  ///
+  /// [json] must not be null.
+  factory WeatherCondition.fromJson(Map<String, dynamic> json) {
+    return WeatherCondition(
+      id: int.parse(json['id'].toString()),
+      main: json['main'] as String,
+      description: json['description'] as String,
+      icon: json['icon'] as String,
+    );
+  }
+
+  /// Weather condition ID.
+  final int id;
+
+  /// Group of weather parameters (Rain, Snow, Extreme etc.).
+  final String main;
+
+  /// Weather condition within the group.
+  final String description;
+
+  /// Weather icon ID.
+  final String icon;
 }
