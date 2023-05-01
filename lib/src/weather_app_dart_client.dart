@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:weather_app_dart_client/src/models/exceptions/open_weather_api_unauthorized_exception.dart';
+import 'package:weather_app_dart_client/src/models/forecase_model.dart';
 
 /// Enumeration of temperature scales.
 enum TemperatureScale {
@@ -121,18 +122,19 @@ class WeatherAppDartClient {
   /// The optional [units] parameter can be used to specify the units in which
   /// to retrieve the weather data. If not provided, the default value is
   /// 'metric'.
-  Future<Map<String, dynamic>> getWeatherData(
+  Future<CurrentWeather> getWeatherData(
     double latitude,
     double longitude, {
-    String? units,
+    TemperatureScale? units,
   }) async {
     final queryParameters = {
       'lat': latitude,
       'lon': longitude,
-      'units': units ?? 'metric',
     };
 
-    return _get('weather', queryParameters: queryParameters);
+    final response = await _get('weather', queryParameters: queryParameters);
+
+    return CurrentWeather.fromJson(response);
   }
 
   /// Retrieves forecast data from an API based on the provided latitude and
@@ -149,7 +151,7 @@ class WeatherAppDartClient {
   /// The optional [days] parameter can be used to specify the number of days
   /// for which to retrieve the forecast data. If not provided, the default
   /// value is 5.
-  Future<Map<String, dynamic>> getForecastData(
+  Future<WeatherForecast> getForecastData(
     double latitude,
     double longitude, {
     TemperatureScale? units,
@@ -162,6 +164,8 @@ class WeatherAppDartClient {
       'cnt': days,
     };
 
-    return _get('forecast?', queryParameters: queryParameters);
+    final result = await _get('forecast?', queryParameters: queryParameters);
+
+    return WeatherForecast.fromJson(result);
   }
 }
