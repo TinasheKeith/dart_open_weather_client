@@ -20,14 +20,12 @@ class WeatherAppDartClient {
   WeatherAppDartClient({required String apiKey}) {
     _dio.options.baseUrl = _baseUrl;
     _dio.options.queryParameters = {'appid': apiKey};
-
     // TODO: [Tinashe] look up what a reasonable timeouts.
     _dio.options.connectTimeout = const Duration(seconds: 10);
     _dio.options.receiveTimeout = const Duration(seconds: 10);
   }
 
-  static const String _baseUrl =
-      'https://api.openweathermap.org/data/3.0/onecall';
+  static const String _baseUrl = 'https://api.openweathermap.org/data/2.5/';
 
   final Dio _dio = Dio();
   final _logger = Logger();
@@ -36,14 +34,10 @@ class WeatherAppDartClient {
     String endpoint, {
     Map<String, dynamic>? queryParameters,
   }) async {
-    print("******************************* inside _Get");
-
     try {
       final response =
           // ignore: inference_failure_on_function_invocation
           await _dio.get(endpoint, queryParameters: queryParameters);
-
-      print("******************************* POST RESPONSE PRINT!");
 
       if (response.statusCode == HttpStatus.ok) {
         final data = response.data;
@@ -84,8 +78,6 @@ class WeatherAppDartClient {
           'Error ${e.response!.statusCode}: ${e.response!.statusMessage}',
         );
       } else if (e.response != null) {
-        print("THIS IS THE TYPE: ${e.type}");
-
         _logger.e(
           e.message,
           [
@@ -97,9 +89,17 @@ class WeatherAppDartClient {
           'Error ${e.response!.statusCode}: ${e.response!.statusMessage}',
         );
       } else {
+        inspect(e);
         throw Exception('Unknown error occurred');
       }
     } catch (e) {
+      inspect(e);
+
+      _logger.wtf(
+        e,
+        [e],
+      );
+
       throw Exception('Unknown error occurred');
     }
   }
@@ -162,6 +162,6 @@ class WeatherAppDartClient {
       'cnt': days,
     };
 
-    return _get('forecast/daily', queryParameters: queryParameters);
+    return _get('forecast?', queryParameters: queryParameters);
   }
 }
