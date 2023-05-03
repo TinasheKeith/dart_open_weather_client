@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 /// A class representing a weather forecast.
 class WeatherForecast {
   /// Creates a new [WeatherForecast] instance.
@@ -76,7 +74,7 @@ class Weather {
       clouds: Clouds.fromJson(json['clouds'] as Map<String, dynamic>),
       wind: Wind.fromJson(json['wind'] as Map<String, dynamic>),
       visibility: json['visibility'] as int,
-      pop: json['pop'] as int,
+      pop: json['pop'] as double,
       dtTxt: DateTime.parse(json['dt_txt'] as String),
     );
   }
@@ -97,7 +95,7 @@ class Weather {
   final int visibility;
 
   /// The probability of precipitation for this forecast.
-  final int pop;
+  final double pop;
 
   /// The date and time of the forecasted weather data, as [DateTime].
   final DateTime dtTxt;

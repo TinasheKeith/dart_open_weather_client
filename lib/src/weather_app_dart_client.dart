@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 import 'package:weather_app_dart_client/src/models/exceptions/open_weather_api_unauthorized_exception.dart';
-import 'package:weather_app_dart_client/src/models/forecase_model.dart';
+import 'package:weather_app_dart_client/src/models/forecast_model.dart';
 
 /// Enumeration of temperature scales.
 enum TemperatureScale {
@@ -165,6 +165,8 @@ class WeatherAppDartClient {
     };
 
     final result = await _get('forecast?', queryParameters: queryParameters);
+
+    _logger.i(result);
 
     return WeatherForecast.fromJson(result);
   }
