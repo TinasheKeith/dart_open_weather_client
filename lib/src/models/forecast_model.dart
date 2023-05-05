@@ -58,7 +58,6 @@ class Weather {
     required this.clouds,
     required this.wind,
     required this.visibility,
-    required this.pop,
     required this.dtTxt,
   });
 
@@ -74,7 +73,6 @@ class Weather {
       clouds: Clouds.fromJson(json['clouds'] as Map<String, dynamic>),
       wind: Wind.fromJson(json['wind'] as Map<String, dynamic>),
       visibility: json['visibility'] as int,
-      pop: json['pop'] as double,
       dtTxt: DateTime.parse(json['dt_txt'] as String),
     );
   }
@@ -94,9 +92,6 @@ class Weather {
   /// The visibility for this forecast.
   final int visibility;
 
-  /// The probability of precipitation for this forecast.
-  final double pop;
-
   /// The date and time of the forecasted weather data, as [DateTime].
   final DateTime dtTxt;
 
@@ -108,8 +103,7 @@ class Weather {
       'clouds': clouds.toJson(),
       'wind': wind.toJson(),
       'visibility': visibility,
-      'pop': pop,
-      'dt_txt': dtTxt,
+      'dt_txt': dtTxt.toIso8601String(),
     };
   }
 }
